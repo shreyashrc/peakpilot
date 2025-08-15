@@ -1,0 +1,13 @@
+duckduckgo-search
+trafilatura
+fastapi
+uvicorn[standard]
+fastmcp
+chromadb
+google-generativeai
+aiohttp
+beautifulsoup4
+python-dotenv
+websockets
+pytest
+httpx

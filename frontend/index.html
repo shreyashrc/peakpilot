@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🏔️ PeakPilot: Hiking Assistant - Indian Trails</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gradient-to-b from-indigo-50 via-white to-white min-h-screen">
+    <div class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white">
+      <div class="max-w-4xl mx-auto py-10 px-4">
+        <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight flex items-center gap-3">
+          <span>🏔️ PeakPilot</span>
+          <span class="text-white/80 text-lg sm:text-xl">Hiking Assistant · Indian Trails</span>
+        </h1>
+        <p class="mt-2 text-white/90">Ask about trail conditions, permits, weather, distance, difficulty, and more. Real-time updates with streaming.</p>
+        <div class="mt-5">
+          <form id="ask-form" class="flex flex-col sm:flex-row gap-2">
+            <input
+              id="question"
+              type="text"
+              class="flex-1 px-4 py-3 rounded-md bg-white/95 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/70 placeholder:text-gray-500"
+              placeholder="Ask about trails... (e.g., 'Is Kedarkantha safe in December?')"
+            />
+            <button
+              id="submitBtn"
+              type="submit"
+              class="px-5 py-3 rounded-md bg-white text-indigo-700 font-semibold shadow-sm hover:bg-indigo-50 disabled:opacity-60"
+            >Ask</button>
+          </form>
+          <div id="chips" class="mt-3 flex flex-wrap gap-2"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6">
+
+      <div id="progress" class="mt-6 hidden">
+        <ol id="progressList" class="relative border-s border-gray-200 dark:border-gray-700"> </ol>
+      </div>
+
+      <div id="answer" class="mt-6"></div>
+    </div>
+
+    <script>
+      const chipsContainer = document.getElementById('chips');
+      const form = document.getElementById('ask-form');
+      const questionInput = document.getElementById('question');
+      const submitBtn = document.getElementById('submitBtn');
+      const progress = document.getElementById('progress');
+      const progressList = document.getElementById('progressList');
+      const answer = document.getElementById('answer');
+
+      const PREINDEXED = [
+        'Triund',
+        'Kedarkantha',
+        'Valley of Flowers',
+        'Kalsubai',
+        'Hampta Pass'
+      ];
+
+      function renderChips() {
+        chipsContainer.innerHTML = '';
+        PREINDEXED.forEach((trail) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'px-3 py-1.5 rounded-full border border-white/30 bg-white/10 text-white hover:bg-white/20 text-sm backdrop-blur transition';
+          btn.textContent = trail;
+          btn.addEventListener('click', () => {
+            questionInput.value = `Tell me about ${trail}`;
+            questionInput.focus();
+          });
+          chipsContainer.appendChild(btn);
+        });
+      }
+
+      function resetUI() {
+        progress.classList.remove('hidden');
+        progressList.innerHTML = '';
+        answer.innerHTML = '';
+      }
+
+      function addProgress(msg) {
+        progress.classList.remove('hidden');
+        const li = document.createElement('li');
+        li.className = 'ms-4 mb-6 transition-all animate-slidein';
+        li.innerHTML = `
+          <div class="absolute w-3 h-3 bg-indigo-600 rounded-full mt-1.5 -start-1.5 border border-white"></div>
+          <time class="mb-1 text-xs text-gray-500">${new Date().toLocaleTimeString()}</time>
+          <div class="text-gray-800">${msg}</div>
+        `;
+        progressList.appendChild(li);
+      }
+
+      function renderWeatherWidget(weather) {
+        if (!weather || !weather.elevations) return '';
+        const parts = Object.entries(weather.elevations).map(([label, info]) => `
+          <div class="flex items-center justify-between p-3 bg-indigo-50 rounded border border-indigo-100">
+            <span class="font-medium text-indigo-800">${label}</span>
+            <span class="px-2 py-1 text-xs rounded bg-white text-indigo-700 border border-indigo-200">${info.temp || ''}</span>
+            <span class="text-sm text-indigo-900">${info.conditions || ''}</span>
+          </div>
+        `).join('');
+        return `<div class="space-y-2">${parts}</div>`;
+      }
+
+      function renderTrailStats(gpx) {
+        if (!gpx) return '';
+        const dist = gpx.distance || '-';
+        const gain = gpx.elevation_gain || '-';
+        const dur = gpx.duration || '-';
+        return `
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span class="badge px-2 py-1 rounded bg-gray-100 border text-gray-700">📏 ${dist}</span>
+            <span class="badge px-2 py-1 rounded bg-gray-100 border text-gray-700">⬆️ ${gain}</span>
+            <span class="badge px-2 py-1 rounded bg-gray-100 border text-gray-700">⏱️ ${dur}</span>
+          </div>
+        `;
+      }
+
+      function renderAnswerCard(payload) {
+        const card = document.createElement('div');
+        card.className = 'bg-white border border-gray-200 rounded-xl shadow-md p-5 animate-fadein';
+
+        const header = document.createElement('div');
+        header.className = 'flex items-center justify-between';
+        header.innerHTML = `<div class="text-lg font-semibold">Answer</div>`;
+        card.appendChild(header);
+
+        const ans = document.createElement('div');
+        ans.className = 'mt-2 text-gray-800 leading-relaxed';
+        const text = (payload && (payload.final_answer || payload.answer)) ? (payload.final_answer || payload.answer) : 'No answer available.';
+        ans.textContent = text;
+        card.appendChild(ans);
+
+        // Weather widget
+        if (payload && payload.weather) {
+          const section = document.createElement('div');
+          section.className = 'mt-4';
+          section.innerHTML = `
+            <div class="text-sm font-semibold text-indigo-700 mb-2">Weather</div>
+            ${renderWeatherWidget(payload.weather)}
+          `;
+          card.appendChild(section);
+        }
+
+        // Trail stats
+        if (payload && payload.gpx_data) {
+          const stats = document.createElement('div');
+          stats.className = 'mt-4';
+          stats.innerHTML = `
+            <div class="text-sm font-semibold text-gray-700 mb-2">Trail Stats</div>
+            ${renderTrailStats(payload.gpx_data)}
+          `;
+          card.appendChild(stats);
+        }
+
+        // Actions
+        const actions = document.createElement('div');
+        actions.className = 'mt-4 flex flex-wrap items-center gap-2';
+        if (payload && payload.trail_map_url) {
+          const a = document.createElement('a');
+          a.href = payload.trail_map_url;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.className = 'inline-flex items-center gap-2 px-3 py-2 rounded bg-gray-100 text-gray-800 hover:bg-gray-200 border';
+          a.textContent = 'View on Map';
+          actions.appendChild(a);
+        }
+        if (payload && payload.alltrails_url) {
+          const b = document.createElement('a');
+          b.href = payload.alltrails_url;
+          b.target = '_blank';
+          b.rel = 'noopener noreferrer';
+          b.className = 'inline-flex items-center gap-2 px-3 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700 shadow';
+          b.textContent = 'View on AllTrails';
+          actions.appendChild(b);
+        }
+        card.appendChild(actions);
+
+        // Citations
+        if (payload && Array.isArray(payload.citations)) {
+          const cites = document.createElement('div');
+          cites.className = 'mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2';
+          payload.citations.forEach((c) => {
+            const div = document.createElement('a');
+            div.href = c.url || '#';
+            div.target = '_blank';
+            div.rel = 'noopener noreferrer';
+            div.className = 'block p-3 rounded border bg-gray-50 hover:bg-gray-100 text-sm text-gray-700';
+            div.textContent = c.title || c.url || 'Source';
+            cites.appendChild(div);
+          });
+          card.appendChild(cites);
+        }
+
+        answer.innerHTML = '';
+        answer.appendChild(card);
+      }
+
+      async function postAsk(question) {
+        try {
+          const res = await fetch('/api/ask', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question }),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          if (data && data.logs) {
+            data.logs.forEach((m) => addProgress(m));
+          }
+          if (data && data.data) {
+            renderAnswerCard(data.data);
+          } else {
+            renderAnswerCard({ answer: 'No data returned from API.' });
+          }
+        } catch (err) {
+          renderAnswerCard({ answer: `Request failed: ${err?.message || err}` });
+        }
+      }
+
+      function connectWebSocket(question) {
+        return new Promise((resolve) => {
+          let gotFinal = false;
+          const WS_URL = window.location.hostname === 'localhost'
+            ? 'ws://localhost:8000/ws'
+            : `wss://${window.location.hostname}/ws`;
+          let ws;
+          try {
+            ws = new WebSocket(WS_URL);
+          } catch (e) {
+            addProgress('Unable to open WebSocket. Falling back to REST.');
+            resolve(false);
+            return;
+          }
+
+          ws.onopen = () => {
+            ws.send(question);
+          };
+
+          ws.onmessage = (ev) => {
+            try {
+              const msg = JSON.parse(ev.data);
+              if (msg.type === 'welcome') {
+                addProgress(msg.message || 'Connected.');
+              } else if (msg.type === 'progress') {
+                addProgress(msg.message);
+              } else if (msg.type === 'answer') {
+                gotFinal = true;
+                renderAnswerCard(msg.data);
+                ws.close();
+                resolve(true);
+              } else if (msg.type === 'error') {
+                addProgress(`Error: ${msg.message}`);
+              }
+            } catch (e) {
+              addProgress('Malformed message from server.');
+            }
+          };
+
+          ws.onerror = () => {
+            addProgress('WebSocket error. Falling back to REST.');
+          };
+
+          ws.onclose = () => {
+            if (!gotFinal) {
+              resolve(false);
+            }
+          };
+        });
+      }
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const q = questionInput.value.trim();
+        if (!q) return;
+
+        resetUI();
+        submitBtn.disabled = true;
+        try {
+          const viaWS = await connectWebSocket(q);
+          if (!viaWS) {
+            await postAsk(q);
+          }
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
+      renderChips();
+    </script>
+  </body>
+  </html>

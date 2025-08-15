@@ -1,6 +1,6 @@
 from typing import Optional, Dict, Any
 
-from duckduckgo_search import DDGS
+from ddgs import DDGS
 
 from utils.cache import CacheManager
 

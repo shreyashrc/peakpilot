@@ -1,4 +1,4 @@
-duckduckgo-search
+ddgs
 trafilatura
 fastapi
 uvicorn[standard]

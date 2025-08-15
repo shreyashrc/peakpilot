@@ -72,14 +72,38 @@ class VectorStore:
             raise ValueError("texts and metadatas must have the same length")
         collection = self.get_or_create_collection()
 
+        unique_texts: List[str] = []
+        unique_metas: List[Dict[str, Any]] = []
+        unique_ids: List[str] = []
+        seen_ids: Dict[str, int] = {}
+        seen_payloads: set = set()
+
+        for t, m in zip(texts, metadatas):
+            base_id = self._hash_id(t, m)
+            payload_key = base_id
+            if payload_key in seen_payloads:
+                continue
+            seen_payloads.add(payload_key)
+
+            if base_id in seen_ids:
+                seen_ids[base_id] += 1
+                uid = f"{base_id}-{seen_ids[base_id]}"
+            else:
+                seen_ids[base_id] = 0
+                uid = base_id
+
+            unique_ids.append(uid)
+            unique_texts.append(t)
+            unique_metas.append(m)
+
         # Generate embeddings via Gemini; will fallback to zero-vectors if no API key set
-        embeddings = embed_texts(texts)
-        if not embeddings or len(embeddings) != len(texts):
-            # Fallback to simple fixed-size zero vectors
-            embeddings = [[0.0] * 10 for _ in texts]
-        ids = [self._hash_id(t, m) for t, m in zip(texts, metadatas)]
-        collection.upsert(ids=ids, documents=texts, metadatas=metadatas, embeddings=embeddings)
-        return ids
+        embeddings = embed_texts(unique_texts)
+        if not embeddings or len(embeddings) != len(unique_texts):
+            embeddings = [[0.0] * 10 for _ in unique_texts]
+
+        if unique_texts:
+            collection.upsert(ids=unique_ids, documents=unique_texts, metadatas=unique_metas, embeddings=embeddings)
+        return unique_ids
 
     def search(self, query: str, k: int = 5) -> List[Dict[str, Any]]:
         collection = self.get_or_create_collection()

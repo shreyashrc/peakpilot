@@ -151,9 +151,9 @@ class RAGSkill(BaseSkill):
             })
             logging.getLogger("peakpilot.mcp").info("RAGSkill: indexed_docs=%d", len(docs))
         except Exception as exc:  # noqa: BLE001
-            if callback:
-                await callback(f"RAG ingestion failed: {exc}")
             logging.getLogger("peakpilot.mcp").warning("RAGSkill failed: %s", exc)
+            if callback:
+                await callback("Indexing had a hiccup; continuing…")
         return context
 
 

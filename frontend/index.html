@@ -3,292 +3,1023 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🏔️ PeakPilot: Hiking Assistant - Indian Trails</title>
+    <meta name="description" content="PeakPilot - Your AI-powered Indian hiking trails assistant. Get real-time trail conditions, weather updates, and permits information.">
+    <title>🏔️ PeakPilot - AI Hiking Assistant for Indian Trails</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      
+      .font-display {
+        font-family: 'Space Grotesk', sans-serif;
+      }
+      
+      /* Modern animations */
+      @keyframes slideUp {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateX(-20px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      
+      @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+      }
+      
+      @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+      
+      .animate-slideup { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+      .animate-slidein { animation: slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+      .animate-float { animation: float 3s ease-in-out infinite; }
+      
+      /* Animated gradient background */
+      .gradient-animate {
+        background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+      }
+      
+      /* Modern glassmorphism */
+      .glass-card {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+      
+      .glass-dark {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      
+      /* Neon glow effects */
+      .neon-glow {
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.5),
+                    0 0 40px rgba(139, 92, 246, 0.3),
+                    0 0 60px rgba(139, 92, 246, 0.1);
+      }
+      
+      .text-glow {
+        text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+      }
+      
+      /* Custom scrollbar */
+      ::-webkit-scrollbar { width: 10px; height: 10px; }
+      ::-webkit-scrollbar-track { background: #1e293b; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb { 
+        background: linear-gradient(to bottom, #8b5cf6, #ec4899); 
+        border-radius: 10px; 
+      }
+      ::-webkit-scrollbar-thumb:hover { background: linear-gradient(to bottom, #7c3aed, #db2777); }
+      
+      /* Loading dots animation */
+      .loading-dots span {
+        animation: blink 1.4s infinite both;
+      }
+      .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+      .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+      
+      @keyframes blink {
+        0%, 80%, 100% { opacity: 0; }
+        40% { opacity: 1; }
+      }
+      
+      /* Skeleton loader */
+      .skeleton {
+        background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+        background-size: 200% 100%;
+        animation: loading 1.5s infinite;
+      }
+      
+      @keyframes loading {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+      
+      /* Hover lift effect */
+      .hover-lift {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .hover-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      }
+      
+      /* Bento grid gaps */
+      .bento-grid {
+        display: grid;
+        gap: 1rem;
+        grid-auto-flow: dense;
+      }
+      
+      /* Noise texture overlay */
+      .noise-overlay {
+        position: relative;
+      }
+      .noise-overlay::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        pointer-events: none;
+        opacity: 0.5;
+      }
+    </style>
   </head>
-  <body class="bg-gradient-to-b from-indigo-50 via-white to-white min-h-screen">
-    <div class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white">
-      <div class="max-w-4xl mx-auto py-10 px-4">
-        <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight flex items-center gap-3">
-          <span>🏔️ PeakPilot</span>
-          <span class="text-white/80 text-lg sm:text-xl">Hiking Assistant · Indian Trails</span>
-        </h1>
-        <p class="mt-2 text-white/90">Ask about trail conditions, permits, weather, distance, difficulty, and more. Real-time updates with streaming.</p>
-        <div class="mt-5">
-          <form id="ask-form" class="flex flex-col sm:flex-row gap-2">
-            <input
-              id="question"
-              type="text"
-              class="flex-1 px-4 py-3 rounded-md bg-white/95 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/70 placeholder:text-gray-500"
-              placeholder="Ask about trails... (e.g., 'Is Kedarkantha safe in December?')"
-            />
-            <button
-              id="submitBtn"
-              type="submit"
-              class="px-5 py-3 rounded-md bg-white text-indigo-700 font-semibold shadow-sm hover:bg-indigo-50 disabled:opacity-60"
-            >Ask</button>
-          </form>
-          <div id="chips" class="mt-3 flex flex-wrap gap-2"></div>
+  <body class="bg-slate-950 text-slate-100 min-h-screen overflow-x-hidden">
+    
+    <!-- ============= ANIMATED BACKGROUND ============= -->
+    <div class="fixed inset-0 -z-10">
+      <div class="absolute inset-0 gradient-animate opacity-10"></div>
+      <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950"></div>
+    </div>
+    
+    <!-- ============= HERO HEADER SECTION ============= -->
+    <header class="relative">
+      <!-- Decorative blobs -->
+      <div class="absolute -top-40 -right-40 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
+      <div class="absolute -top-40 -left-40 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: 2s;"></div>
+      
+      <div class="relative max-w-7xl mx-auto px-4 pt-12 pb-8 sm:px-6 lg:px-8">
+        <!-- Navigation Bar -->
+        <nav class="flex items-center justify-between mb-12">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold text-2xl bg-gradient-to-r from-violet-400 to-pink-400 bg-clip-text text-transparent">
+              PeakPilot
+            </span>
+          </div>
+          
+          <!-- Live Status Badge -->
+          <div class="hidden sm:flex items-center gap-3 glass-dark px-4 py-2 rounded-full">
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span class="text-xs text-slate-300">AI Active</span>
+            </div>
+            <div class="w-px h-4 bg-slate-700"></div>
+            <span class="text-xs text-slate-400">v2.0</span>
+          </div>
+        </nav>
+        
+        <!-- Hero Content -->
+        <div class="relative z-10">
+          <!-- Large Display Title with Split Design -->
+          <div class="mb-8">
+            <h1 class="font-display font-black text-5xl sm:text-7xl lg:text-8xl leading-none tracking-tight">
+              <span class="block text-slate-100">Discover</span>
+              <span class="block mt-2">
+                <span class="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Indian Trails
+                </span>
+              </span>
+            </h1>
+            <p class="mt-6 text-lg sm:text-xl text-slate-400 max-w-2xl leading-relaxed">
+              AI-powered hiking intelligence for the Indian subcontinent. 
+              <span class="text-slate-300 font-medium">Real-time conditions</span>, 
+              <span class="text-slate-300 font-medium">weather forecasts</span>, and 
+              <span class="text-slate-300 font-medium">expert insights</span>.
+            </p>
+          </div>
+          
+          <!-- Search Interface with Modern Design -->
+          <div class="relative max-w-4xl">
+            <form id="ask-form" class="relative group">
+              <div class="absolute -inset-1 bg-gradient-to-r from-violet-600 to-pink-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+              <div class="relative flex flex-col sm:flex-row gap-3 p-2 glass-dark rounded-2xl">
+                <!-- Search Input -->
+                <div class="relative flex-1">
+                  <div class="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                  </div>
+                  <input
+                    id="question"
+                    type="text"
+                    class="w-full pl-14 pr-4 py-4 bg-slate-900/50 text-slate-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/50 placeholder:text-slate-500 text-base"
+                    placeholder="Ask anything about Indian trails..."
+                    aria-label="Search trails"
+                  />
+                </div>
+                
+                <!-- Submit Button with Gradient -->
+                <button
+                  id="submitBtn"
+                  type="submit"
+                  class="group px-8 py-4 bg-gradient-to-r from-violet-600 to-pink-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-purple-500/25 transform transition-all duration-200 hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 min-w-[140px]"
+                  aria-label="Submit search"
+                >
+                  <span id="btnText">Explore</span>
+                  <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                  </svg>
+                  <svg id="btnLoader" class="hidden w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </button>
+              </div>
+            </form>
+            
+            <!-- Popular Trails - Redesigned as Cards -->
+            <div class="mt-8">
+              <p class="text-xs text-slate-500 uppercase tracking-wider mb-4 font-medium">Popular Expeditions</p>
+              <div id="chips" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3"></div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </header>
 
-    <div class="max-w-4xl mx-auto p-4 sm:p-6">
+    <!-- ============= MAIN CONTENT AREA ============= -->
+    <main class="relative max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8">
+      
+      <!-- ============= PROGRESS TRACKER - Modern Timeline ============= -->
+      <section id="progress" class="hidden mb-8 animate-slideup">
+        <div class="glass-dark rounded-2xl p-6 border border-slate-800">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="loading-dots flex gap-1 text-violet-400">
+              <span class="w-2 h-2 bg-current rounded-full"></span>
+              <span class="w-2 h-2 bg-current rounded-full"></span>
+              <span class="w-2 h-2 bg-current rounded-full"></span>
+            </div>
+            <h2 class="text-sm font-medium text-slate-400">Processing your request</h2>
+          </div>
+          <ol id="progressList" class="space-y-3"></ol>
+        </div>
+      </section>
 
-      <div id="progress" class="mt-6 hidden">
-        <ol id="progressList" class="relative border-s border-gray-200 dark:border-gray-700"> </ol>
-      </div>
+      <!-- ============= LOADING SKELETON - Modern Design ============= -->
+      <section id="loadingSkeleton" class="hidden">
+        <div class="glass-dark rounded-2xl p-8 border border-slate-800">
+          <div class="space-y-6">
+            <div class="flex items-start gap-4">
+              <div class="skeleton w-12 h-12 rounded-xl shrink-0"></div>
+              <div class="flex-1 space-y-3">
+                <div class="skeleton h-6 w-3/4 rounded"></div>
+                <div class="skeleton h-4 w-full rounded"></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div class="skeleton h-24 rounded-xl"></div>
+              <div class="skeleton h-24 rounded-xl"></div>
+              <div class="skeleton h-24 rounded-xl"></div>
+              <div class="skeleton h-24 rounded-xl"></div>
+            </div>
+            <div class="skeleton h-48 w-full rounded-xl"></div>
+          </div>
+        </div>
+      </section>
 
-      <div id="answer" class="mt-6"></div>
-    </div>
+      <!-- ============= ANSWER DISPLAY - Bento Grid Layout ============= -->
+      <section id="answer" aria-live="polite" aria-label="Search results"></section>
+
+      <!-- ============= ERROR DISPLAY - Modern Alert ============= -->
+      <section id="errorContainer" class="hidden animate-slideup">
+        <div class="relative overflow-hidden rounded-2xl border border-red-900/50 bg-red-950/20 p-6">
+          <div class="absolute inset-0 bg-gradient-to-br from-red-600/10 to-transparent"></div>
+          <div class="relative flex items-start gap-4">
+            <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center">
+              <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div class="flex-1">
+              <h3 class="font-semibold text-red-400 mb-1">Unable to complete request</h3>
+              <p id="errorMessage" class="text-sm text-slate-400"></p>
+              <button onclick="location.reload()" class="mt-4 text-sm text-red-400 hover:text-red-300 underline underline-offset-4 transition-colors">
+                Try again
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
 
     <script>
-      const chipsContainer = document.getElementById('chips');
-      const form = document.getElementById('ask-form');
-      const questionInput = document.getElementById('question');
-      const submitBtn = document.getElementById('submitBtn');
-      const progress = document.getElementById('progress');
-      const progressList = document.getElementById('progressList');
-      const answer = document.getElementById('answer');
+      // ============= DOM ELEMENT REFERENCES =============
+      const elements = {
+        chipsContainer: document.getElementById('chips'),
+        form: document.getElementById('ask-form'),
+        questionInput: document.getElementById('question'),
+        submitBtn: document.getElementById('submitBtn'),
+        btnText: document.getElementById('btnText'),
+        btnLoader: document.getElementById('btnLoader'),
+        progress: document.getElementById('progress'),
+        progressList: document.getElementById('progressList'),
+        answer: document.getElementById('answer'),
+        loadingSkeleton: document.getElementById('loadingSkeleton'),
+        errorContainer: document.getElementById('errorContainer'),
+        errorMessage: document.getElementById('errorMessage')
+      };
 
-      const PREINDEXED = [
-        'Triund',
-        'Kedarkantha',
-        'Valley of Flowers',
-        'Kalsubai',
-        'Hampta Pass'
-      ];
+      // ============= CONFIGURATION =============
+      const CONFIG = {
+        PREINDEXED_TRAILS: [
+          { name: 'Valley of Flowers', icon: '🌺', difficulty: 'Moderate' },
+          { name: 'Kedarkantha', icon: '❄️', difficulty: 'Moderate' },
+          { name: 'Triund Trek', icon: '⛰️', difficulty: 'Easy' },
+          { name: 'Hampta Pass', icon: '🏔️', difficulty: 'Moderate' },
+          { name: 'Roopkund', icon: '💀', difficulty: 'Difficult' }
+        ],
+        WS_TIMEOUT: 120000,
+        API_TIMEOUT: 60000
+      };
 
+      // ============= UI STATE MANAGEMENT =============
+      const UIState = {
+        setLoading(isLoading) {
+          elements.submitBtn.disabled = isLoading;
+          elements.btnText.textContent = isLoading ? '' : 'Explore';
+          elements.btnLoader.classList.toggle('hidden', !isLoading);
+          elements.loadingSkeleton.classList.toggle('hidden', !isLoading);
+          
+          // Update button styling during loading
+          if (isLoading) {
+            elements.submitBtn.classList.add('opacity-75');
+          } else {
+            elements.submitBtn.classList.remove('opacity-75');
+          }
+        },
+        
+        showError(message) {
+          this.hideAll();
+          elements.errorMessage.textContent = message;
+          elements.errorContainer.classList.remove('hidden');
+        },
+        
+        hideAll() {
+          elements.progress.classList.add('hidden');
+          elements.loadingSkeleton.classList.add('hidden');
+          elements.errorContainer.classList.add('hidden');
+          elements.answer.innerHTML = '';
+        },
+        
+        reset() {
+          this.hideAll();
+          elements.progressList.innerHTML = '';
+        }
+      };
+
+      // ============= QUICK ACCESS CARDS RENDERING =============
       function renderChips() {
-        chipsContainer.innerHTML = '';
-        PREINDEXED.forEach((trail) => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'px-3 py-1.5 rounded-full border border-white/30 bg-white/10 text-white hover:bg-white/20 text-sm backdrop-blur transition';
-          btn.textContent = trail;
-          btn.addEventListener('click', () => {
-            questionInput.value = `Tell me about ${trail}`;
-            questionInput.focus();
+        elements.chipsContainer.innerHTML = '';
+        CONFIG.PREINDEXED_TRAILS.forEach((trail) => {
+          const card = document.createElement('button');
+          card.type = 'button';
+          card.className = 'group relative overflow-hidden glass-dark border border-slate-800 rounded-xl p-4 text-left hover-lift transition-all duration-300 hover:border-violet-700/50';
+          card.innerHTML = `
+            <div class="absolute inset-0 bg-gradient-to-br from-violet-600/0 to-pink-600/0 group-hover:from-violet-600/10 group-hover:to-pink-600/10 transition-all duration-300"></div>
+            <div class="relative">
+              <div class="text-2xl mb-2">${trail.icon}</div>
+              <div class="text-sm font-medium text-slate-200 group-hover:text-white transition-colors">${trail.name}</div>
+              <div class="text-xs text-slate-500 mt-1">${trail.difficulty}</div>
+            </div>
+          `;
+          card.addEventListener('click', () => {
+            elements.questionInput.value = `Tell me about ${trail.name} trek`;
+            elements.form.dispatchEvent(new Event('submit'));
           });
-          chipsContainer.appendChild(btn);
+          elements.chipsContainer.appendChild(card);
         });
       }
 
-      function resetUI() {
-        progress.classList.remove('hidden');
-        progressList.innerHTML = '';
-        answer.innerHTML = '';
-      }
-
-      function addProgress(msg) {
-        progress.classList.remove('hidden');
+      // ============= PROGRESS TRACKING - Modern Timeline =============
+      function addProgress(message, type = 'info') {
+        elements.progress.classList.remove('hidden');
         const li = document.createElement('li');
-        li.className = 'ms-4 mb-6 transition-all animate-slidein';
+        li.className = 'flex items-start gap-3 animate-slidein';
+        
+        const iconClass = type === 'success' ? 'text-emerald-400' : type === 'error' ? 'text-red-400' : 'text-violet-400';
+        const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : '→';
+        
         li.innerHTML = `
-          <div class="absolute w-3 h-3 bg-indigo-600 rounded-full mt-1.5 -start-1.5 border border-white"></div>
-          <time class="mb-1 text-xs text-gray-500">${new Date().toLocaleTimeString()}</time>
-          <div class="text-gray-800">${msg}</div>
-        `;
-        progressList.appendChild(li);
-      }
-
-      function renderWeatherWidget(weather) {
-        if (!weather || !weather.elevations) return '';
-        const parts = Object.entries(weather.elevations).map(([label, info]) => `
-          <div class="flex items-center justify-between p-3 bg-indigo-50 rounded border border-indigo-100">
-            <span class="font-medium text-indigo-800">${label}</span>
-            <span class="px-2 py-1 text-xs rounded bg-white text-indigo-700 border border-indigo-200">${info.temp || ''}</span>
-            <span class="text-sm text-indigo-900">${info.conditions || ''}</span>
-          </div>
-        `).join('');
-        return `<div class="space-y-2">${parts}</div>`;
-      }
-
-      function renderTrailStats(gpx) {
-        if (!gpx) return '';
-        const dist = gpx.distance || '-';
-        const gain = gpx.elevation_gain || '-';
-        const dur = gpx.duration || '-';
-        return `
-          <div class="flex flex-wrap gap-2 mt-2">
-            <span class="badge px-2 py-1 rounded bg-gray-100 border text-gray-700">📏 ${dist}</span>
-            <span class="badge px-2 py-1 rounded bg-gray-100 border text-gray-700">⬆️ ${gain}</span>
-            <span class="badge px-2 py-1 rounded bg-gray-100 border text-gray-700">⏱️ ${dur}</span>
+          <span class="${iconClass} mt-0.5">${icon}</span>
+          <div class="flex-1">
+            <p class="text-sm text-slate-300">${message}</p>
+            <time class="text-xs text-slate-600">${new Date().toLocaleTimeString()}</time>
           </div>
         `;
+        elements.progressList.appendChild(li);
       }
 
-      function renderAnswerCard(payload) {
-        const card = document.createElement('div');
-        card.className = 'bg-white border border-gray-200 rounded-xl shadow-md p-5 animate-fadein';
-
-        const header = document.createElement('div');
-        header.className = 'flex items-center justify-between';
-        header.innerHTML = `<div class="text-lg font-semibold">Answer</div>`;
-        card.appendChild(header);
-
-        const ans = document.createElement('div');
-        ans.className = 'mt-2 text-gray-800 leading-relaxed';
-        const text = (payload && (payload.final_answer || payload.answer)) ? (payload.final_answer || payload.answer) : 'No answer available.';
-        ans.textContent = text;
-        card.appendChild(ans);
-
-        // Weather widget
-        if (payload && payload.weather) {
-          const section = document.createElement('div');
-          section.className = 'mt-4';
-          section.innerHTML = `
-            <div class="text-sm font-semibold text-indigo-700 mb-2">Weather</div>
-            ${renderWeatherWidget(payload.weather)}
-          `;
-          card.appendChild(section);
-        }
-
-        // Trail stats
-        if (payload && payload.gpx_data) {
-          const stats = document.createElement('div');
-          stats.className = 'mt-4';
-          stats.innerHTML = `
-            <div class="text-sm font-semibold text-gray-700 mb-2">Trail Stats</div>
-            ${renderTrailStats(payload.gpx_data)}
-          `;
-          card.appendChild(stats);
-        }
-
-        // Actions
-        const actions = document.createElement('div');
-        actions.className = 'mt-4 flex flex-wrap items-center gap-2';
-        if (payload && payload.trail_map_url) {
-          const a = document.createElement('a');
-          a.href = payload.trail_map_url;
-          a.target = '_blank';
-          a.rel = 'noopener noreferrer';
-          a.className = 'inline-flex items-center gap-2 px-3 py-2 rounded bg-gray-100 text-gray-800 hover:bg-gray-200 border';
-          a.textContent = 'View on Map';
-          actions.appendChild(a);
-        }
-        if (payload && payload.alltrails_url) {
-          const b = document.createElement('a');
-          b.href = payload.alltrails_url;
-          b.target = '_blank';
-          b.rel = 'noopener noreferrer';
-          b.className = 'inline-flex items-center gap-2 px-3 py-2 rounded bg-emerald-600 text-white hover:bg-emerald-700 shadow';
-          b.textContent = 'View on AllTrails';
-          actions.appendChild(b);
-        }
-        card.appendChild(actions);
-
-        // Citations
-        if (payload && Array.isArray(payload.citations)) {
-          const cites = document.createElement('div');
-          cites.className = 'mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2';
-          payload.citations.forEach((c) => {
-            const div = document.createElement('a');
-            div.href = c.url || '#';
-            div.target = '_blank';
-            div.rel = 'noopener noreferrer';
-            div.className = 'block p-3 rounded border bg-gray-50 hover:bg-gray-100 text-sm text-gray-700';
-            div.textContent = c.title || c.url || 'Source';
-            cites.appendChild(div);
-          });
-          card.appendChild(cites);
-        }
-
-        answer.innerHTML = '';
-        answer.appendChild(card);
-      }
-
-      async function postAsk(question) {
-        try {
-          const res = await fetch('/api/ask', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ question }),
-          });
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const data = await res.json();
-          if (data && data.logs) {
-            data.logs.forEach((m) => addProgress(m));
+      // ============= ENHANCED RESPONSE PARSER =============
+      const ResponseParser = {
+        cleanText(text, preserveStructure = false) {
+          if (!text) return '';
+          
+          // For display, preserve some structure
+          if (preserveStructure) {
+            return text
+              .replace(/\[Source:[^\]]+\]/g, '')
+              .trim();
           }
-          if (data && data.data) {
+          
+          // For summary, clean everything
+          return text
+            .replace(/\[Source:[^\]]+\]/g, '')
+            .replace(/\*\*/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+        },
+        
+        parseAnswerText(text) {
+          if (!text) return { summary: 'No information available.', sections: [], details: [] };
+          
+          const cleaned = this.cleanText(text);
+          
+          // Extract summary (first paragraph or first 200 chars)
+          let summary = '';
+          const firstPeriod = cleaned.indexOf('. ');
+          if (firstPeriod > 0 && firstPeriod < 200) {
+            summary = cleaned.substring(0, firstPeriod + 1);
+          } else {
+            summary = cleaned.substring(0, 200) + '...';
+          }
+          
+          // Parse sections (looking for headers marked with ### or similar patterns)
+          const sections = [];
+          const lines = text.split('\n');
+          let currentSection = null;
+          
+          lines.forEach(line => {
+            const trimmed = line.trim();
+            
+            // Check if it's a header (### or bold text at start of line)
+            if (trimmed.startsWith('###') || (trimmed.startsWith('**') && trimmed.endsWith('**'))) {
+              if (currentSection) {
+                sections.push(currentSection);
+              }
+              currentSection = {
+                title: trimmed.replace(/^###\s*/, '').replace(/\*\*/g, '').trim(),
+                content: []
+              };
+            } else if (currentSection && trimmed) {
+              currentSection.content.push(trimmed);
+            }
+          });
+          
+          if (currentSection) {
+            sections.push(currentSection);
+          }
+          
+          // Extract bullet points with asterisks for detailed info
+          const details = this.extractBulletPoints(text);
+          
+          return { summary, sections, details };
+        },
+        
+        extractBulletPoints(text) {
+          const details = [];
+          
+          // Match patterns like: * **Label: content or * **Label**: content
+          const bulletPattern = /\*\s*\*\*([^:*]+)(?:\*\*)?:\s*([^*]+?)(?=\*\s*\*\*|$)/g;
+          
+          let match;
+          while ((match = bulletPattern.exec(text)) !== null) {
+            const label = match[1].trim();
+            const content = match[2].trim()
+              .replace(/\.$/, '') // Remove trailing period
+              .replace(/\s+/g, ' '); // Normalize spaces
+            
+            // Determine icon based on label
+            let icon = '📍';
+            const labelLower = label.toLowerCase();
+            if (labelLower.includes('distance')) icon = '📏';
+            else if (labelLower.includes('altitude') || labelLower.includes('elevation')) icon = '⛰️';
+            else if (labelLower.includes('difficulty')) icon = '🎯';
+            else if (labelLower.includes('time') || labelLower.includes('season')) icon = '📅';
+            else if (labelLower.includes('duration')) icon = '⏱️';
+            else if (labelLower.includes('permit')) icon = '📄';
+            else if (labelLower.includes('highlight') || labelLower.includes('view')) icon = '🌄';
+            else if (labelLower.includes('camp') || labelLower.includes('base')) icon = '🏕️';
+            else if (labelLower.includes('temperature') || labelLower.includes('weather')) icon = '🌡️';
+            else if (labelLower.includes('route') || labelLower.includes('trail')) icon = '🗺️';
+            
+            details.push({ label, content, icon });
+          }
+          
+          return details;
+        },
+        
+        separateContentFromBullets(text) {
+          // This function separates the narrative text from the bullet points
+          const bulletPattern = /\*\s*\*\*[^:*]+(?:\*\*)?:.*?(?=\*\s*\*\*|$)/g;
+          
+          // Find all bullet point matches
+          const bullets = text.match(bulletPattern) || [];
+          
+          // Remove bullets from text to get the narrative parts
+          let narrativeText = text;
+          bullets.forEach(bullet => {
+            narrativeText = narrativeText.replace(bullet, '');
+          });
+          
+          // Clean up the narrative text
+          const paragraphs = narrativeText
+            .split(/\n\n+/)
+            .map(para => para.trim())
+            .filter(para => para.length > 30); // Keep only substantial paragraphs
+          
+          return { paragraphs, bullets };
+        },
+        
+        extractStats(data) {
+          return {
+            distance: data?.gpx_data?.distance || data?.distance || '—',
+            elevation: data?.gpx_data?.elevation_gain || data?.elevation_gain || '—',
+            duration: data?.gpx_data?.duration || data?.duration || '—',
+            difficulty: this.normalizeDifficulty(data?.gpx_data?.difficulty || data?.difficulty || '—'),
+            bestSeason: data?.best_season || 'Mar–Jun, Sep–Nov',
+            altitude: data?.max_altitude || data?.altitude || '—',
+            basecamp: data?.basecamp || '—',
+            permit: data?.permit_required ? 'Required' : 'Not Required'
+          };
+        },
+        
+        normalizeDifficulty(difficulty) {
+          if (!difficulty || difficulty === '—') return 'Moderate';
+          const diff = difficulty.toLowerCase();
+          if (diff.includes('easy')) return 'Easy';
+          if (diff.includes('moderate')) return 'Moderate';
+          if (diff.includes('difficult') || diff.includes('hard')) return 'Difficult';
+          if (diff.includes('expert') || diff.includes('extreme')) return 'Expert';
+          return difficulty;
+        },
+        
+        extractWeather(data) {
+          if (!data?.weather?.elevations) return null;
+          
+          const weather = [];
+          for (const [elevation, info] of Object.entries(data.weather.elevations)) {
+            weather.push({
+              elevation: elevation,
+              temperature: info.temp || info.temperature || '—',
+              conditions: info.conditions || info.description || '—',
+              icon: this.getWeatherIcon(info.conditions)
+            });
+          }
+          return weather;
+        },
+        
+        getWeatherIcon(conditions) {
+          if (!conditions) return '🌤️';
+          const cond = conditions.toLowerCase();
+          if (cond.includes('rain')) return '🌧️';
+          if (cond.includes('snow')) return '❄️';
+          if (cond.includes('cloud')) return '☁️';
+          if (cond.includes('clear') || cond.includes('sun')) return '☀️';
+          if (cond.includes('storm')) return '⛈️';
+          if (cond.includes('fog') || cond.includes('mist')) return '🌫️';
+          return '🌤️';
+        }
+      };
+
+      // ============= MODERN BENTO GRID ANSWER CARD =============
+      function renderAnswerCard(payload) {
+        try {
+          const trailName = payload?.entities?.trail || 
+                          payload?.trail_name || 
+                          (payload?.question?.match(/about (.+?)(?:\?|$)/)?.[1]) ||
+                          'Trail';
+          
+          const answerText = payload?.final_answer || payload?.answer || '';
+          const { summary, sections, details } = ResponseParser.parseAnswerText(answerText);
+          const stats = ResponseParser.extractStats(payload);
+          const weather = ResponseParser.extractWeather(payload);
+          
+          // Create modern bento grid layout
+          const container = document.createElement('div');
+          container.className = 'animate-slideup';
+          container.innerHTML = `
+            <!-- Main Bento Grid Container -->
+            <div class="bento-grid grid-cols-1 lg:grid-cols-3">
+              
+              <!-- Hero Card - Spans 2 columns on large screens -->
+              <div class="lg:col-span-2 glass-dark rounded-2xl p-8 border border-slate-800 hover-lift">
+                <div class="flex items-start justify-between mb-6">
+                  <div>
+                    <h2 class="font-display text-4xl font-bold text-white mb-3">${trailName}</h2>
+                    <p class="text-slate-400 text-lg leading-relaxed">${summary}</p>
+                  </div>
+                  <span class="px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600/20 to-pink-600/20 border border-violet-500/30 text-violet-300 font-medium text-sm">
+                    ${stats.difficulty}
+                  </span>
+                </div>
+                
+                <!-- Key Highlights -->
+                ${sections.length > 0 ? `
+                  <div class="space-y-4 mt-8">
+                    ${sections.slice(0, 2).map(section => `
+                      <div class="p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+                        <h3 class="text-violet-400 font-medium mb-2 flex items-center gap-2">
+                          <span>→</span>
+                          <span>${section.title}</span>
+                        </h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                          ${section.content.join(' ').substring(0, 200)}...
+                        </p>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : ''}
+              </div>
+              
+              <!-- Stats Grid - Single column on large screens -->
+              <div class="space-y-4">
+                <!-- Distance Card -->
+                <div class="glass-dark rounded-2xl p-6 border border-slate-800 hover-lift group">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-slate-500 text-xs uppercase tracking-wider mb-1">Distance</p>
+                      <p class="text-2xl font-bold text-white">${stats.distance}</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                      📏
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Elevation Card -->
+                <div class="glass-dark rounded-2xl p-6 border border-slate-800 hover-lift group">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-slate-500 text-xs uppercase tracking-wider mb-1">Elevation Gain</p>
+                      <p class="text-2xl font-bold text-white">${stats.elevation}</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                      ⛰️
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Duration Card -->
+                <div class="glass-dark rounded-2xl p-6 border border-slate-800 hover-lift group">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-slate-500 text-xs uppercase tracking-wider mb-1">Duration</p>
+                      <p class="text-2xl font-bold text-white">${stats.duration}</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                      ⏱️
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Weather Section - Full width -->
+              ${weather ? `
+                <div class="lg:col-span-3 glass-dark rounded-2xl p-8 border border-slate-800">
+                  <h3 class="font-display text-xl font-semibold text-white mb-6 flex items-center gap-2">
+                    <span class="text-2xl">🌤️</span>
+                    <span>Current Weather Conditions</span>
+                  </h3>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    ${weather.map(w => `
+                      <div class="p-4 bg-slate-900/50 rounded-xl border border-slate-800 hover:border-violet-700/50 transition-colors">
+                        <div class="flex items-center justify-between mb-3">
+                          <span class="text-3xl">${w.icon}</span>
+                          <span class="text-2xl font-bold text-white">${w.temperature}</span>
+                        </div>
+                        <p class="text-sm text-slate-400 mb-1">${w.elevation}</p>
+                        <p class="text-sm text-slate-300">${w.conditions}</p>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : ''}
+              
+              <!-- Detailed Content - Full width -->
+              ${answerText && answerText !== summary ? `
+                <div class="lg:col-span-3 glass-dark rounded-2xl p-8 border border-slate-800">
+                  <h3 class="font-display text-xl font-semibold text-white mb-6">Complete Trail Information</h3>
+                  
+                  <!-- Extract and display bullet points as cards if they exist -->
+                  ${details.length > 0 ? `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                      ${details.map(detail => `
+                        <div class="p-4 bg-slate-900/50 rounded-xl border border-slate-800 hover:border-violet-700/50 transition-all duration-300">
+                          <div class="flex items-start gap-3">
+                            <span class="text-2xl mt-1">${detail.icon}</span>
+                            <div class="flex-1">
+                              <h4 class="font-semibold text-violet-400 mb-2">${detail.label}</h4>
+                              <p class="text-sm text-slate-300 leading-relaxed">${detail.content}</p>
+                            </div>
+                          </div>
+                        </div>
+                      `).join('')}
+                    </div>
+                  ` : ''}
+                  
+                  <!-- Full text content (cleaned up to remove bullet points if they were extracted) -->
+                  <div class="prose prose-invert prose-slate max-w-none">
+                    <div class="text-slate-300 leading-relaxed space-y-4">
+                      ${(() => {
+                        // If we found bullet points, show only the intro and conclusion paragraphs
+                        let displayText = answerText;
+                        
+                        if (details.length > 0) {
+                          // Remove the bullet points from the text
+                          displayText = displayText.replace(/\*\s*\*\*[^*]+\*\*:.*?(?=\*\s*\*\*|$)/g, '');
+                        }
+                        
+                        // Split into paragraphs and clean up
+                        const paragraphs = displayText
+                          .split(/\n\n+/)
+                          .map(para => ResponseParser.cleanText(para, true))
+                          .filter(para => para.length > 50); // Only keep substantial paragraphs
+                        
+                        return paragraphs.map(para => 
+                          `<p class="mb-4">${para}</p>`
+                        ).join('');
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              ` : ''}
+              
+              <!-- Action Cards - Bottom row -->
+              <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Best Season Card -->
+                <div class="glass-dark rounded-2xl p-6 border border-slate-800 hover-lift">
+                  <div class="flex items-center gap-3 mb-3">
+                    <span class="text-2xl">📅</span>
+                    <span class="text-sm text-slate-400">Best Season</span>
+                  </div>
+                  <p class="text-lg font-semibold text-white">${stats.bestSeason}</p>
+                </div>
+                
+                <!-- Permit Status Card -->
+                <div class="glass-dark rounded-2xl p-6 border border-slate-800 hover-lift">
+                  <div class="flex items-center gap-3 mb-3">
+                    <span class="text-2xl">📄</span>
+                    <span class="text-sm text-slate-400">Permit Status</span>
+                  </div>
+                  <p class="text-lg font-semibold text-white">${stats.permit}</p>
+                </div>
+                
+                <!-- Quick Actions Card -->
+                <div class="glass-dark rounded-2xl p-6 border border-slate-800 hover-lift">
+                  <div class="flex items-center gap-3 mb-3">
+                    <span class="text-2xl">🔗</span>
+                    <span class="text-sm text-slate-400">Resources</span>
+                  </div>
+                  <div class="flex gap-2">
+                    ${payload?.trail_map_url ? `
+                      <a href="${payload.trail_map_url}" target="_blank" rel="noopener" 
+                         class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 rounded-lg text-sm text-slate-300 transition-colors">
+                        Map
+                      </a>
+                    ` : ''}
+                    ${payload?.alltrails_url ? `
+                      <a href="${payload.alltrails_url}" target="_blank" rel="noopener"
+                         class="px-3 py-1.5 bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 rounded-lg text-sm text-emerald-400 transition-colors">
+                        AllTrails
+                      </a>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Sources Footer -->
+              ${(payload?.citations?.length > 0 || payload?.raw_documents?.length > 0) ? `
+                <div class="lg:col-span-3 mt-4">
+                  <div class="flex items-center gap-4 text-xs text-slate-600">
+                    <span>Sources:</span>
+                    ${renderSources(payload)}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+          
+          elements.answer.innerHTML = '';
+          elements.answer.appendChild(container);
+        } catch (error) {
+          console.error('Error rendering answer:', error);
+          UIState.showError('Failed to display the response. Please try again.');
+        }
+      }
+
+      // ============= SOURCE RENDERING =============
+      function renderSources(payload) {
+        const sources = new Set();
+        let sourceHTML = '';
+        
+        if (payload?.citations?.length > 0) {
+          payload.citations.forEach(cite => {
+            const title = cite.title || cite.source || 'Source';
+            const url = cite.url || '#';
+            if (!sources.has(url)) {
+              sources.add(url);
+              sourceHTML += `
+                <a href="${url}" target="_blank" rel="noopener"
+                   class="text-violet-400 hover:text-violet-300 transition-colors">
+                  ${title}
+                </a>
+              `;
+            }
+          });
+        }
+        
+        return sourceHTML || '<span class="text-slate-600">No sources available</span>';
+      }
+
+      // ============= API COMMUNICATION =============
+      async function postAsk(question) {
+        const timeout = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Request timeout')), CONFIG.API_TIMEOUT)
+        );
+        
+        try {
+          const response = await Promise.race([
+            fetch('/api/ask', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ question }),
+            }),
+            timeout
+          ]);
+          
+          if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+          }
+          
+          const data = await response.json();
+          
+          if (data?.logs?.length > 0) {
+            data.logs.forEach(log => addProgress(log, 'info'));
+          }
+          
+          if (data?.data) {
+            addProgress('Search completed successfully!', 'success');
             renderAnswerCard(data.data);
           } else {
-            renderAnswerCard({ answer: 'No data returned from API.' });
+            throw new Error('No data received from server');
           }
-        } catch (err) {
-          renderAnswerCard({ answer: `Request failed: ${err?.message || err}` });
+        } catch (error) {
+          console.error('API Error:', error);
+          throw error;
         }
       }
 
+      // ============= WEBSOCKET COMMUNICATION =============
       function connectWebSocket(question) {
         return new Promise((resolve) => {
-          let gotFinal = false;
+          let hasResult = false;
+          let wsTimeout;
+          
           const WS_URL = window.location.hostname === 'localhost'
             ? 'ws://localhost:8000/ws'
             : `wss://${window.location.hostname}/ws`;
+          
           let ws;
           try {
             ws = new WebSocket(WS_URL);
+            
+            wsTimeout = setTimeout(() => {
+              if (!hasResult) {
+                ws.close();
+                addProgress('Connection timeout. Switching to standard mode...', 'error');
+                resolve(false);
+              }
+            }, CONFIG.WS_TIMEOUT);
           } catch (e) {
-            addProgress('Unable to open WebSocket. Falling back to REST.');
+            console.error('WebSocket error:', e);
+            addProgress('Real-time connection unavailable. Using standard mode...', 'info');
             resolve(false);
             return;
           }
 
           ws.onopen = () => {
+            addProgress('Connected to AI server', 'success');
             ws.send(question);
           };
 
-          ws.onmessage = (ev) => {
+          ws.onmessage = (event) => {
             try {
-              const msg = JSON.parse(ev.data);
-              if (msg.type === 'welcome') {
-                addProgress(msg.message || 'Connected.');
-              } else if (msg.type === 'progress') {
-                addProgress(msg.message);
-              } else if (msg.type === 'answer') {
-                gotFinal = true;
-                renderAnswerCard(msg.data);
-                ws.close();
-                resolve(true);
-              } else if (msg.type === 'error') {
-                addProgress(`Error: ${msg.message}`);
+              const msg = JSON.parse(event.data);
+              
+              switch(msg.type) {
+                case 'welcome':
+                  addProgress(msg.message || 'Connection established', 'info');
+                  break;
+                  
+                case 'progress':
+                  addProgress(msg.message, 'info');
+                  break;
+                  
+                case 'answer':
+                  hasResult = true;
+                  clearTimeout(wsTimeout);
+                  addProgress('Analysis complete!', 'success');
+                  renderAnswerCard(msg.data);
+                  ws.close();
+                  resolve(true);
+                  break;
+                  
+                case 'error':
+                  addProgress(`Error: ${msg.message}`, 'error');
+                  break;
+                  
+                default:
+                  console.warn('Unknown message type:', msg.type);
               }
             } catch (e) {
-              addProgress('Malformed message from server.');
+              console.error('Message parsing error:', e);
+              addProgress('Received malformed data', 'error');
             }
           };
 
-          ws.onerror = () => {
-            addProgress('WebSocket error. Falling back to REST.');
+          ws.onerror = (error) => {
+            console.error('WebSocket error:', error);
+            addProgress('Connection error occurred', 'error');
+            clearTimeout(wsTimeout);
           };
 
           ws.onclose = () => {
-            if (!gotFinal) {
+            clearTimeout(wsTimeout);
+            if (!hasResult) {
+              addProgress('Connection closed. Using standard mode...', 'info');
               resolve(false);
             }
           };
         });
       }
 
-      form.addEventListener('submit', async (e) => {
+      // ============= FORM SUBMISSION HANDLER =============
+      elements.form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const q = questionInput.value.trim();
-        if (!q) return;
-
-        resetUI();
-        submitBtn.disabled = true;
+        
+        const question = elements.questionInput.value.trim();
+        if (!question) {
+          elements.questionInput.focus();
+          return;
+        }
+        
+        UIState.reset();
+        UIState.setLoading(true);
+        elements.progress.classList.remove('hidden');
+        
         try {
-          const viaWS = await connectWebSocket(q);
-          if (!viaWS) {
-            await postAsk(q);
+          addProgress('Initializing AI analysis...', 'info');
+          
+          const viaWebSocket = await connectWebSocket(question);
+          
+          if (!viaWebSocket) {
+            addProgress('Using standard search mode...', 'info');
+            await postAsk(question);
           }
+        } catch (error) {
+          console.error('Search error:', error);
+          UIState.showError(error.message || 'An unexpected error occurred. Please try again.');
         } finally {
-          submitBtn.disabled = false;
+          UIState.setLoading(false);
         }
       });
 
+      // ============= KEYBOARD SHORTCUTS =============
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== elements.questionInput) {
+          e.preventDefault();
+          elements.questionInput.focus();
+        }
+        
+        if (e.key === 'Escape' && document.activeElement === elements.questionInput) {
+          elements.questionInput.value = '';
+          elements.questionInput.blur();
+        }
+      });
+
+      // ============= INITIALIZATION =============
       renderChips();
+      
+      // Focus management
+      if (window.innerWidth > 768) {
+        setTimeout(() => elements.questionInput.focus(), 500);
+      }
+      
+      // Add subtle parallax effect on scroll
+      window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        const parallax = document.querySelector('.gradient-animate');
+        if (parallax) {
+          parallax.style.transform = `translateY(${scrolled * 0.5}px)`;
+        }
+      });
     </script>
   </body>
-  </html>
+</html>

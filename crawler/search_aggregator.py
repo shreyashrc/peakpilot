@@ -2,7 +2,7 @@ import asyncio
 from typing import Any, Dict, List, Optional
 
 import trafilatura
-from duckduckgo_search import DDGS
+from ddgs import DDGS
 
 
 class SearchAggregator:

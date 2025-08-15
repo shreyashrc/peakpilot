@@ -168,8 +168,25 @@ async def websocket_endpoint(websocket: WebSocket) -> None:
             await websocket.close()
             return
 
+        def _friendly(msg: str) -> str:
+            mapping = {
+                "Identifying trail locations...": "Understanding your question…",
+                "Fetching content from Indiahikes...": "Finding trek info…",
+                "Searching the web for reliable sources...": "Searching trusted sources…",
+                "Collecting documents": "Collecting details…",
+                "🗺️ Fetching GPX and trail stats...": "Gathering trail stats…",
+                "Generating embeddings...": "Indexing information…",
+                "Indexing had a hiccup; continuing…": "Indexing had a hiccup; continuing…",
+                "Preparing comprehensive answer...": "Composing your answer…",
+                "Retrieved context chunks": "Finalising…",
+            }
+            for k, v in mapping.items():
+                if msg.startswith(k):
+                    return v
+            return msg
+
         async def on_progress(message: str) -> None:
-            await manager.send_personal_message({"type": "progress", "message": message, "timestamp": _now_ts()}, websocket)
+            await manager.send_personal_message({"type": "progress", "message": _friendly(message), "timestamp": _now_ts()}, websocket)
 
         try:
             result = await run_pipeline(question, on_progress)

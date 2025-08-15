@@ -2,6 +2,13 @@
 
 Agentic web crawler that answers hiking/trekking questions for Indian trails using FastAPI, FastMCP-style skills, Gemini (2.5 Pro), and a RAG pipeline over ChromaDB.
 
+PeakPilot is an AI-powered Hiking Assistant focused on Indian trekking trails. You ask a question (like “Is Kedarkantha safe in December?”), and it:
+- Finds relevant trek information from the web (like Indiahikes, AllTrails, etc.)
+- Fetches weather snapshots
+- Builds a small “knowledge base” on the fly
+- Uses an LLM (Gemini) with Retrieval-Augmented Generation (RAG) to answer clearly
+- Streams progress back to you in real-time via WebSocket
+
 ### Features
 - FastAPI backend with WebSocket streaming
 - FastMCP-style skill orchestration (search → crawl → weather → stats → RAG → answer)

@@ -32,22 +32,8 @@ Agentic web crawler that answers hiking/trekking questions for Indian trails usi
 
 ### Render Deployment
 
-One-click deploy using `render.yaml`:
-
-1. Push your repo to GitHub
-2. In Render, create a new Web Service → “Deploy from a repository”
-3. Select this repo; Render will detect `render.yaml`
-4. Set environment variables:
-   - `GEMINI_API_KEY` (required)
-   - Optional tuning:
-     - `INDEXED_TRAILS` (comma-separated)
-     - `CACHE_TTL_MINUTES` (default 5), `WEATHER_CACHE_TTL_MINUTES` (default 60)
-     - `SOURCE_ORDER` (default `indiahikes,web`)
-     - `ENABLE_WIKIPEDIA`, `ENABLE_WIKIVOYAGE` (both default false in code path)
-     - `CACHE_SCHEMA_VERSION` (bump to invalidate cached answers)
-5. Health check path: `/api/health`
-6. Render will build and run using Dockerfile; default start command is:
-   - `uvicorn api.main:app --host 0.0.0.0 --port 8000`
+The project is deployed using Render
+Visit: `https://peakpilot.onrender.com/`
 
 ### Project Structure
 ```
@@ -70,5 +56,4 @@ See `.env.example` for required keys.
 - The RAG layer uses a persistent local ChromaDB (`./chroma_db`) via compose and falls back to an in-process client if unreachable.
 - Source routing:
   - `SOURCE_ORDER` (default: `indiahikes,web`)
-  - Wikipedia/Wikivoyage have been removed from the live pipeline; you can re-enable alternative sources by extending `SOURCE_ORDER` and adding `ENABLE_*` flags.
 - Links: We provide OSM and AllTrails deep-links; users can choose routes and GPX as needed.
